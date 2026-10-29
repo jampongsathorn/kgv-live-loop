@@ -1,0 +1,54 @@
+name: 24-7 YouTube live loop
+
+on:
+  workflow_dispatch:        # กด Run workflow ด้วยมือ (ปิด schedule ไว้ก่อนกันรันเปล่า)
+
+  # ── เปิด cron เมื่อพร้อมจริงเท่านั้น ──────────────────────────────
+  # ถ้าเปิดไว้ตั้งแต่ยังไม่มีวิดีโอ/secret ระบบจะรันทุก 6 ชม. แล้ว fail เปล่าๆ
+  # วิธีเปิด: เอา # หน้า 2 บรรทัดล่างออก
+  # schedule:
+  #   - cron: "0 */6 * * *"   # relaunch every 6 hours (hosted runners are killed at 6h)
+
+concurrency:
+  group: youtube-live
+  cancel-in-progress: false # don't kill the running stream when a new run is queued
+
+jobs:
+  stream:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install ffmpeg
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+
+      - name: Get the loop video
+        env:
+          VIDEO_URL: ${{ secrets.VIDEO_URL }}   # direct link to the mp4 / release asset / R2 URL
+          DRIVE_FILE_ID: ${{ secrets.DRIVE_FILE_ID }} # or a Google Drive file id (handles >100MB confirm)
+        run: |
+          if [ -n "${DRIVE_FILE_ID:-}" ]; then
+            echo "Downloading from Google Drive id=${DRIVE_FILE_ID}"
+            pip install --quiet gdown
+            gdown --id "$DRIVE_FILE_ID" -O loop.mp4
+          elif [ -n "${VIDEO_URL:-}" ]; then
+            echo "Downloading video from secret VIDEO_URL"
+            curl -L --retry 5 --retry-delay 5 --fail -o loop.mp4 "$VIDEO_URL"
+          elif [ -f loop.mp4 ]; then
+            echo "Using loop.mp4 committed in the repo"
+          else
+            echo "::error::No video found. Commit loop.mp4 (<=100MB) or set the VIDEO_URL secret."
+            exit 1
+          fi
+          ffprobe -v error -show_entries format=duration,size,bit_rate -of default=nw=1 loop.mp4
+
+      - name: Stream to YouTube
+        env:
+          STREAM_KEY: ${{ secrets.YOUTUBE_STREAM_KEY }}
+          VIDEO: loop.mp4
+          V_BITRATE: 4500k # drop to 2500k for 720p on weaker runners
+          A_BITRATE: 160k
+        run: |
+          chmod +x stream.sh
+          ./stream.sh

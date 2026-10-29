@@ -1,0 +1,11 @@
+# secrets / tokens — ห้ามขึ้น git
+auth/
+*.env
+stream.env
+.env
+*oauth*tokens*.json
+kgv_*.log
+loop*.mp4
+*.mp4
+*.flv
+__pycache__/
