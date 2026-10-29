@@ -61,6 +61,7 @@ MAX_SECONDS="${MAX_SECONDS:-20700}"
 HEALTHCHECK_URL="${HEALTHCHECK_URL:-}"
 BACKUP_URL="${BACKUP_URL:-}"   # เช่น rtmp://b.rtmp.youtube.com/live2?backup=1
 ON_EXIT_CMD="${ON_EXIT_CMD:-}"  # คำสั่งที่จะรันตอนจบ (เช่น จบ broadcast ด้วย kgv_end.py)
+PLAY_ONCE="${PLAY_ONCE:-0}"     # 1 = เล่นไฟล์จบรอบเดียวไม่วนซ้ำ (เพลงไม่ซ้ำในรอบ)
 
 NUM="${V_BITRATE%[kK]}"; BUF="$(( ${NUM:-4500} * 2 ))k"
 
@@ -137,8 +138,11 @@ while :; do
   fi
   [ "$limit" -gt 0 ] && echo "[$(now_hm)] จะสตรีมต่ออีกไม่เกิน ${limit}s"
 
-  args=(-hide_banner -loglevel warning -stats
-        -re -stream_loop -1 -i "$VIDEO")
+  if [ "$PLAY_ONCE" = "1" ]; then
+    args=(-hide_banner -loglevel warning -stats -re -i "$VIDEO")
+  else
+    args=(-hide_banner -loglevel warning -stats -re -stream_loop -1 -i "$VIDEO")
+  fi
   [ -n "$limit" ] && args+=(-t "$limit")
 
   if [ "$COPY_MODE" = "1" ]; then
@@ -162,6 +166,12 @@ while :; do
   ffmpeg "${args[@]}"
   rc=$?
   echo "ffmpeg exited rc=$rc"
+
+  # โหมดรอบเดียว: จบไฟล์ = จบรอบ ห้ามวนซ้ำ (กันเพลงซ้ำ)
+  if [ "$PLAY_ONCE" = "1" ] && [ "$rc" = "0" ]; then
+    echo "เล่นครบรอบแล้ว (PLAY_ONCE=1) — จบงาน ไม่วนซ้ำ"
+    exit 0
+  fi
 
   # ออกจากช่วงเวลาแล้ว -> กลับไปรอรอบถัดไป (ไม่ต้อง reconnect)
   if [ -n "$WS" ]; then

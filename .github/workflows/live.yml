@@ -77,6 +77,10 @@ jobs:
           # ⚠ บน GitHub Actions ไม่ควรเปิด backup ingest (upload 2 เท่า -> drop frame)
           # ถ้าย้ายไป VPS ค่อยใส่ rtmp://b.rtmp.youtube.com/live2?backup=1
           BACKUP_URL: ""
+          # 1 = ไฟล์ที่ใช้คือ "1 รอบเต็ม" (เพลงครบชุดไม่ซ้ำ) -> เล่นจบแล้วหยุด ไม่วนซ้ำ
+          #     เหมาะกับไฟล์จาก make_music_loop.sh
+          # 0 = วนลูปไฟล์สั้นๆ ไปเรื่อยๆ จนครบเวลา
+          PLAY_ONCE: "1"
           # ความยาวรอบนี้ = ค่าที่กรอกตอนกด Run workflow (default 180 นาที = 3 ชม.)
           # หมายเหตุ: ตัวเลขนี้คือ "ความยาวของ live" ไม่ใช่ความยาวไฟล์
           # เพราะ stream.sh ใช้ -stream_loop -1 วนไฟล์สั้นๆ ได้ไม่จำกัด

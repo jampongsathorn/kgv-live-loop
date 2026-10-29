@@ -8,6 +8,7 @@
 #   ./publish_media_to_github.sh live-media loop_3h_1080p.mp4
 #   GH_TOKEN=ghp_xxx ./publish_media_to_github.sh live-media loop_3h_1080p.mp4
 #
+# ⚠ ใช้ curl -T (stream) ไม่ใช่ --data-binary — ไฟล์ใหญ่จะ OOM ถ้าโหลดเข้า RAM
 # ต้องมี env: GH_TOKEN (หรือ gh auth login ไว้แล้ว)
 # repo ปลายทาง: ตั้ง REPO=owner/name หรือปล่อยว่างให้อ่านจาก git remote
 set -euo pipefail
@@ -80,12 +81,12 @@ if [ -n "$EXIST" ]; then
   api DELETE "/repos/$REPO/releases/assets/$EXIST" >/dev/null
 fi
 
-echo "→ กำลังอัปโหลด (ไม่มีความคืบหน้าแสดงจนจบ)..."
+echo "→ กำลังอัปโหลด (สตรีมไฟล์ ไม่โหลดเข้า RAM — ไฟล์ 2 GB ก็ไม่ OOM)..."
 RESP=$(curl -sS -X POST \
   -H "Authorization: Bearer $GH_TOKEN" \
   -H "Accept: application/vnd.github+json" \
   -H "Content-Type: application/octet-stream" \
-  --data-binary "@$FILE" \
+  -T "$FILE" \
   "https://uploads.github.com/repos/$REPO/releases/$RID/assets?name=$NAME")
 
 URL=$(printf '%s' "$RESP" | python3 -c "
