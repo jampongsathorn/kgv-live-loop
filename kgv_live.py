@@ -136,11 +136,19 @@ def build_service(tokens_path: Path, verbose: bool = True):
 
 def find_or_create_stream(yt, new_key: bool = False, verbose: bool = True) -> dict:
     found = None
+    default_stream = None
     resp = yt.liveStreams().list(part="id,snippet,cdn,status", mine=True, maxResults=50).execute()
     for item in resp.get("items", []):
+        if item["snippet"].get("isDefaultStream"):
+            default_stream = item
         if item["snippet"]["title"] == STREAM_TITLE:
             found = item
             break
+    # ไม่มี stream ที่ชื่อเรา -> ใช้ Default stream key เดิมของช่อง (key เดียวกับที่ Studio แสดง)
+    if not found and default_stream:
+        if verbose:
+            print(f"→ ใช้ Default stream key เดิม {default_stream['id']}")
+        found = default_stream
 
     if found and new_key:
         if verbose:
@@ -173,7 +181,7 @@ def find_or_create_stream(yt, new_key: bool = False, verbose: bool = True) -> di
 def find_or_create_broadcast(yt, stream_id: str, args, verbose: bool = True) -> dict:
     live_states = {"created", "ready", "testing", "live"}
     resp = yt.liveBroadcasts().list(
-        part="id,snippet,status,contentDetails", mine=True, broadcastStatus="all", maxResults=50
+        part="id,snippet,status,contentDetails", mine=True, maxResults=50
     ).execute()
 
     for item in resp.get("items", []):
@@ -277,8 +285,9 @@ def main() -> None:
         for s in yt.liveStreams().list(part="id,snippet,status", mine=True, maxResults=50).execute().get("items", []):
             print(f"  {s['id']}  {s['snippet']['title']}  [{s['status']['streamStatus']}]")
         print("\n== liveBroadcasts ==")
+        # หมายเหตุ: API ไม่ให้ใช้ mine=true คู่กับ broadcastStatus (400 Incompatible parameters)
         for b in yt.liveBroadcasts().list(
-            part="id,snippet,status", mine=True, broadcastStatus="all", maxResults=50
+            part="id,snippet,status", mine=True, maxResults=50
         ).execute().get("items", []):
             print(f"  {b['id']}  [{b['status']['lifeCycleStatus']}]  {b['snippet']['title'][:70]}")
         return

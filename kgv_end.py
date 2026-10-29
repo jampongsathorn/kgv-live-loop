@@ -51,7 +51,7 @@ def main() -> None:
         targets = items
     else:
         resp = yt.liveBroadcasts().list(
-            part="id,snippet,status", mine=True, broadcastStatus="all", maxResults=50
+            part="id,snippet,status", mine=True, maxResults=50
         ).execute()
         items = resp.get("items", [])
         needle = args.title or DEFAULT_BC_TITLE
