@@ -1,7 +1,12 @@
 name: 24-7 YouTube live loop
 
 on:
-  workflow_dispatch:        # กด Run workflow ด้วยมือได้เสมอ
+  workflow_dispatch:
+    inputs:
+      minutes:
+        description: "ความยาวรอบนี้ (นาที) — 180 = 3 ชม. / 2 = ทดสอบสั้นๆ"
+        required: false
+        default: "180"
   schedule:
     # ทุก 2 ชม. (ไม่ใช่ 6) โดยตั้งใจ:
     #   job ถูกฆ่าที่ 6 ชม. แต่สคริปต์จบเองที่ 5 ชม. 45 น.
@@ -72,7 +77,15 @@ jobs:
           # ⚠ บน GitHub Actions ไม่ควรเปิด backup ingest (upload 2 เท่า -> drop frame)
           # ถ้าย้ายไป VPS ค่อยใส่ rtmp://b.rtmp.youtube.com/live2?backup=1
           BACKUP_URL: ""
-          MAX_SECONDS: "20700" # 5 ชม. 45 น. จบก่อนโดนฆ่าที่ 6 ชม.
+          # ความยาวรอบนี้ = ค่าที่กรอกตอนกด Run workflow (default 180 นาที = 3 ชม.)
+          # หมายเหตุ: ตัวเลขนี้คือ "ความยาวของ live" ไม่ใช่ความยาวไฟล์
+          # เพราะ stream.sh ใช้ -stream_loop -1 วนไฟล์สั้นๆ ได้ไม่จำกัด
+          STREAM_MINUTES: ${{ inputs.minutes || '180' }}
         run: |
           chmod +x stream.sh
+          MINS="${STREAM_MINUTES%.*}"
+          [ -n "$MINS" ] && [ "$MINS" -gt 0 ] 2>/dev/null || MINS=180
+          # หัก 60 วิ buffer ให้ ffmpeg ปิดตัวเองก่อน GitHub ฆ่าที่ 6 ชม. พอดี
+          export MAX_SECONDS=$(( MINS * 60 - 60 ))
+          echo "รอบนี้สตรีม $MINS นาที (MAX_SECONDS=$MAX_SECONDS) จากไฟล์ $(du -h loop.mp4 | cut -f1)"
           ./stream.sh
