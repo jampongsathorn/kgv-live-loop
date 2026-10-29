@@ -1,13 +1,14 @@
 name: 24-7 YouTube live loop
 
 on:
-  workflow_dispatch:        # กด Run workflow ด้วยมือ (ปิด schedule ไว้ก่อนกันรันเปล่า)
-
-  # ── เปิด cron เมื่อพร้อมจริงเท่านั้น ──────────────────────────────
-  # ถ้าเปิดไว้ตั้งแต่ยังไม่มีวิดีโอ/secret ระบบจะรันทุก 6 ชม. แล้ว fail เปล่าๆ
-  # วิธีเปิด: เอา # หน้า 2 บรรทัดล่างออก
-  # schedule:
-  #   - cron: "0 */6 * * *"   # relaunch every 6 hours (hosted runners are killed at 6h)
+  workflow_dispatch:        # กด Run workflow ด้วยมือได้เสมอ
+  schedule:
+    # ทุก 2 ชม. (ไม่ใช่ 6) โดยตั้งใจ:
+    #   job ถูกฆ่าที่ 6 ชม. แต่สคริปต์จบเองที่ 5 ชม. 45 น.
+    #   cron ที่ยิงมาซ้ำระหว่างนั้นจะถูก "ต่อคิว" (concurrency group เดียวกัน)
+    #   พอ job ปัจจุบันจบ คิวถัดไปเริ่มทันที -> ช่องว่างเหลือ ~0-5 นาที ไม่ใช่ 15-30 นาที
+    #   หมายเหตุ: GitHub เก็บคิวไว้แค่ 1 รายการ (ตัวใหม่ทับตัวเก่า) จึงไม่รันซ้อนกัน
+    - cron: "0 */2 * * *"
 
 concurrency:
   group: youtube-live
@@ -47,8 +48,15 @@ jobs:
         env:
           STREAM_KEY: ${{ secrets.YOUTUBE_STREAM_KEY }}
           VIDEO: loop.mp4
+          # 1 = สตรีมด้วย -c:v copy (แนะนำมาก: ไฟล์ต้อง pre-encode ด้วย make_loop_file.sh)
+          # 0 = encode สดบน runner (กิน CPU 2 คอร์ -> ภาพกระตุกง่าย)
+          COPY_MODE: "1"
           V_BITRATE: 4500k # drop to 2500k for 720p on weaker runners
-          A_BITRATE: 160k
+          A_BITRATE: 192k
+          # ⚠ บน GitHub Actions ไม่ควรเปิด backup ingest (upload 2 เท่า -> drop frame)
+          # ถ้าย้ายไป VPS ค่อยใส่ rtmp://b.rtmp.youtube.com/live2?backup=1
+          BACKUP_URL: ""
+          MAX_SECONDS: "20700" # 5 ชม. 45 น. จบก่อนโดนฆ่าที่ 6 ชม.
         run: |
           chmod +x stream.sh
           ./stream.sh
