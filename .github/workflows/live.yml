@@ -26,23 +26,39 @@ jobs:
 
       - name: Get the loop video
         env:
-          VIDEO_URL: ${{ secrets.VIDEO_URL }}   # direct link to the mp4 / release asset / R2 URL
-          DRIVE_FILE_ID: ${{ secrets.DRIVE_FILE_ID }} # or a Google Drive file id (handles >100MB confirm)
+          VIDEO_URL: ${{ secrets.VIDEO_URL }}         # ลิงก์ตรง mp4 / GitHub Release / R2
+          DRIVE_FILE_ID: ${{ secrets.DRIVE_FILE_ID }} # หรือ Drive file id — ไฟล์ใหญ่แค่ไหนก็ได้ runner ดาวน์โหลดเอง
         run: |
+          have_gdown() { python3 -c "import gdown" 2>/dev/null || pip install --quiet gdown; }
+
           if [ -n "${DRIVE_FILE_ID:-}" ]; then
             echo "Downloading from Google Drive id=${DRIVE_FILE_ID}"
-            pip install --quiet gdown
-            gdown --id "$DRIVE_FILE_ID" -O loop.mp4
+            have_gdown
+            gdown --id "$DRIVE_FILE_ID" -O loop.mp4 || {
+              echo "::error::gdown ล้มเหลว — ตรวจว่าแชร์ไฟล์เป็น Anyone with the link"; exit 1; }
           elif [ -n "${VIDEO_URL:-}" ]; then
-            echo "Downloading video from secret VIDEO_URL"
-            curl -L --retry 5 --retry-delay 5 --fail -o loop.mp4 "$VIDEO_URL"
+            case "$VIDEO_URL" in
+              *drive.google.com*)
+                echo "VIDEO_URL เป็นลิงก์ Google Drive -> ใช้ gdown"
+                have_gdown
+                ID=$(echo "$VIDEO_URL" | sed -nE 's#.*(/d/|id=)([A-Za-z0-9_-]{10,}).*#\2#p')
+                [ -n "$ID" ] || { echo "::error::แยก file id จากลิงก์ Drive ไม่ได้"; exit 1; }
+                gdown --id "$ID" -O loop.mp4 ;;
+              *)
+                echo "Downloading video from secret VIDEO_URL"
+                curl -L --retry 5 --retry-delay 5 --fail -o loop.mp4 "$VIDEO_URL" ;;
+            esac
           elif [ -f loop.mp4 ]; then
             echo "Using loop.mp4 committed in the repo"
           else
-            echo "::error::No video found. Commit loop.mp4 (<=100MB) or set the VIDEO_URL secret."
+            echo "::error::No video found. Commit loop.mp4 (<=100MB), or set VIDEO_URL / DRIVE_FILE_ID secret."
             exit 1
           fi
+
+          ls -lh loop.mp4
           ffprobe -v error -show_entries format=duration,size,bit_rate -of default=nw=1 loop.mp4
+          ffprobe -v error -select_streams v:0 -show_entries stream=codec_name -of csv=p=0 loop.mp4 \
+            | grep -q . || { echo "::error::ไฟล์ที่ได้ไม่ใช่ไฟล์วิดีโอ (อาจเป็นหน้า HTML ของ Drive)"; exit 1; }
 
       - name: Stream to YouTube
         env:
