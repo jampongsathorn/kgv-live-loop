@@ -144,7 +144,15 @@ def find_or_create_stream(yt, new_key: bool = False, verbose: bool = True) -> di
         if item["snippet"]["title"] == STREAM_TITLE:
             found = item
             break
-    # ไม่มี stream ที่ชื่อเรา -> ใช้ Default stream key เดิมของช่อง (key เดียวกับที่ Studio แสดง)
+    # ไม่มี stream ที่ชื่อเรา -> ใช้ stream เดิมของช่องก่อน (กันสร้าง key ใหม่ทุกรอบ)
+    if not found and resp.get("items"):
+        cand = default_stream or next(
+            (i for i in resp["items"] if i["snippet"]["title"].startswith("Default stream")),
+            resp["items"][0],
+        )
+        if verbose:
+            print(f"→ ใช้ stream เดิมของช่อง {cand['id']} ({cand['snippet']['title']})")
+        found = cand
     if not found and default_stream:
         if verbose:
             print(f"→ ใช้ Default stream key เดิม {default_stream['id']}")

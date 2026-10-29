@@ -1,0 +1,521 @@
+{
+ "seed": "20261029",
+ "target_minutes": 177.0,
+ "total_seconds": 10673.6,
+ "total_hours": 2.965,
+ "tracks": 63,
+ "rounds": [
+  {
+   "round": 1,
+   "tracks": [
+    "신발끈을 매고",
+    "환기하는 시간",
+    "녹차와 얼음 조각",
+    "가로수길 풀내음",
+    "세 시의 머그잔",
+    "강변의 윤슬",
+    "보름달 아래 귀갓길",
+    "번져가는 스케치",
+    "넘겨보는 첫 페이지",
+    "햇볕 좋은 산책로",
+    "머리카락을 스치는 바람",
+    "화요일의 새순",
+    "작은 꽃집 앞 길목",
+    "서쪽 하늘이 물들 때",
+    "발끝으로 세는 박자",
+    "나뭇잎 사이의 빛",
+    "열쇠를 돌리는 소리",
+    "창을 두드리는 아침",
+    "하루의 한가운데",
+    "스탠드 불을 끄고",
+    "포스트잇 위의 약속",
+    "파란 수첩을 덮으며",
+    "노란 형광펜",
+    "여백에 적은 단어들",
+    "좋아하는 음반을 틀고",
+    "테라스의 얼음잔",
+    "접어둔 마지막 페이지",
+    "운동화로 갈아신고",
+    "따뜻한 홍차 한 잔",
+    "만년필과 빈 종이",
+    "에코백을 메고서",
+    "마침표를 찍고 나면",
+    "말차 라떼와 주파수",
+    "현관문을 열면",
+    "노을 비치는 창틀",
+    "망설임 없는 연필선",
+    "열어둔 창과 하늘빛",
+    "서랍을 닫는 저녁",
+    "안개가 걷힌 뒤",
+    "하얀 식탁의 계절",
+    "노을 속을 헤엄치듯",
+    "여섯 시의 골목길",
+    "구름 위를 걷는 기분",
+    "구름 없는 시월",
+    "풀어둔 소매 단추",
+    "느린 호흡의 온도",
+    "헐렁한 티셔츠와 주말",
+    "햇볕에 마른 린넨",
+    "오후의 재단실",
+    "단골집 포장 봉투",
+    "파스텔 색연필",
+    "구석 자리와 베이스라인",
+    "네모 칸의 일기",
+    "금요일 저녁의 공기",
+    "커튼이 흔들리는 방",
+    "새 노트를 펼치면",
+    "보도블록 위 왈츠",
+    "골목 끝 로스터리",
+    "작업대 위의 원단",
+    "동네 한 바퀴",
+    "가로등과 풀벌레 소리",
+    "모퉁이 가게 복숭아차",
+    "베란다의 연두빛 잎"
+   ]
+  }
+ ],
+ "order": [
+  {
+   "path": "/home/user/kgv_media/songs/신발끈을 매고.m4a",
+   "name": "신발끈을 매고",
+   "dur": 166.61366666666666,
+   "round": 1,
+   "start_sec": 0.0
+  },
+  {
+   "path": "/home/user/kgv_media/songs/환기하는 시간.m4a",
+   "name": "환기하는 시간",
+   "dur": 173.18366666666665,
+   "round": 1,
+   "start_sec": 166.61
+  },
+  {
+   "path": "/home/user/kgv_media/songs/녹차와 얼음 조각.m4a",
+   "name": "녹차와 얼음 조각",
+   "dur": 180.50166666666667,
+   "round": 1,
+   "start_sec": 339.8
+  },
+  {
+   "path": "/home/user/kgv_media/songs/가로수길 풀내음.m4a",
+   "name": "가로수길 풀내음",
+   "dur": 167.27466666666666,
+   "round": 1,
+   "start_sec": 520.3
+  },
+  {
+   "path": "/home/user/kgv_media/songs/세 시의 머그잔.m4a",
+   "name": "세 시의 머그잔",
+   "dur": 167.57366666666667,
+   "round": 1,
+   "start_sec": 687.57
+  },
+  {
+   "path": "/home/user/kgv_media/songs/강변의 윤슬.m4a",
+   "name": "강변의 윤슬",
+   "dur": 167.18966666666665,
+   "round": 1,
+   "start_sec": 855.15
+  },
+  {
+   "path": "/home/user/kgv_media/songs/보름달 아래 귀갓길.m4a",
+   "name": "보름달 아래 귀갓길",
+   "dur": 157.33366666666666,
+   "round": 1,
+   "start_sec": 1022.34
+  },
+  {
+   "path": "/home/user/kgv_media/songs/번져가는 스케치.m4a",
+   "name": "번져가는 스케치",
+   "dur": 154.23966666666666,
+   "round": 1,
+   "start_sec": 1179.67
+  },
+  {
+   "path": "/home/user/kgv_media/songs/넘겨보는 첫 페이지.m4a",
+   "name": "넘겨보는 첫 페이지",
+   "dur": 152.59766666666667,
+   "round": 1,
+   "start_sec": 1333.91
+  },
+  {
+   "path": "/home/user/kgv_media/songs/햇볕 좋은 산책로.m4a",
+   "name": "햇볕 좋은 산책로",
+   "dur": 170.70966666666666,
+   "round": 1,
+   "start_sec": 1486.51
+  },
+  {
+   "path": "/home/user/kgv_media/songs/머리카락을 스치는 바람.m4a",
+   "name": "머리카락을 스치는 바람",
+   "dur": 168.06366666666668,
+   "round": 1,
+   "start_sec": 1657.22
+  },
+  {
+   "path": "/home/user/kgv_media/songs/화요일의 새순.m4a",
+   "name": "화요일의 새순",
+   "dur": 180.73566666666667,
+   "round": 1,
+   "start_sec": 1825.28
+  },
+  {
+   "path": "/home/user/kgv_media/songs/작은 꽃집 앞 길목.m4a",
+   "name": "작은 꽃집 앞 길목",
+   "dur": 167.87166666666667,
+   "round": 1,
+   "start_sec": 2006.02
+  },
+  {
+   "path": "/home/user/kgv_media/songs/서쪽 하늘이 물들 때.m4a",
+   "name": "서쪽 하늘이 물들 때",
+   "dur": 179.66966666666667,
+   "round": 1,
+   "start_sec": 2173.89
+  },
+  {
+   "path": "/home/user/kgv_media/songs/발끝으로 세는 박자.m4a",
+   "name": "발끝으로 세는 박자",
+   "dur": 178.70966666666666,
+   "round": 1,
+   "start_sec": 2353.56
+  },
+  {
+   "path": "/home/user/kgv_media/songs/나뭇잎 사이의 빛.m4a",
+   "name": "나뭇잎 사이의 빛",
+   "dur": 181.84566666666666,
+   "round": 1,
+   "start_sec": 2532.27
+  },
+  {
+   "path": "/home/user/kgv_media/songs/열쇠를 돌리는 소리.m4a",
+   "name": "열쇠를 돌리는 소리",
+   "dur": 179.37066666666666,
+   "round": 1,
+   "start_sec": 2714.11
+  },
+  {
+   "path": "/home/user/kgv_media/songs/창을 두드리는 아침.m4a",
+   "name": "창을 두드리는 아침",
+   "dur": 162.15466666666666,
+   "round": 1,
+   "start_sec": 2893.48
+  },
+  {
+   "path": "/home/user/kgv_media/songs/하루의 한가운데.m4a",
+   "name": "하루의 한가운데",
+   "dur": 170.96566666666666,
+   "round": 1,
+   "start_sec": 3055.64
+  },
+  {
+   "path": "/home/user/kgv_media/songs/스탠드 불을 끄고.m4a",
+   "name": "스탠드 불을 끄고",
+   "dur": 166.03766666666667,
+   "round": 1,
+   "start_sec": 3226.6
+  },
+  {
+   "path": "/home/user/kgv_media/songs/포스트잇 위의 약속.m4a",
+   "name": "포스트잇 위의 약속",
+   "dur": 154.73066666666668,
+   "round": 1,
+   "start_sec": 3392.64
+  },
+  {
+   "path": "/home/user/kgv_media/songs/파란 수첩을 덮으며.m4a",
+   "name": "파란 수첩을 덮으며",
+   "dur": 151.40266666666668,
+   "round": 1,
+   "start_sec": 3547.37
+  },
+  {
+   "path": "/home/user/kgv_media/songs/노란 형광펜.m4a",
+   "name": "노란 형광펜",
+   "dur": 180.67166666666665,
+   "round": 1,
+   "start_sec": 3698.78
+  },
+  {
+   "path": "/home/user/kgv_media/songs/여백에 적은 단어들.m4a",
+   "name": "여백에 적은 단어들",
+   "dur": 181.01366666666667,
+   "round": 1,
+   "start_sec": 3879.45
+  },
+  {
+   "path": "/home/user/kgv_media/songs/좋아하는 음반을 틀고.m4a",
+   "name": "좋아하는 음반을 틀고",
+   "dur": 165.61066666666667,
+   "round": 1,
+   "start_sec": 4060.46
+  },
+  {
+   "path": "/home/user/kgv_media/songs/테라스의 얼음잔.m4a",
+   "name": "테라스의 얼음잔",
+   "dur": 172.13866666666667,
+   "round": 1,
+   "start_sec": 4226.07
+  },
+  {
+   "path": "/home/user/kgv_media/songs/접어둔 마지막 페이지.m4a",
+   "name": "접어둔 마지막 페이지",
+   "dur": 180.20266666666666,
+   "round": 1,
+   "start_sec": 4398.21
+  },
+  {
+   "path": "/home/user/kgv_media/songs/운동화로 갈아신고.m4a",
+   "name": "운동화로 갈아신고",
+   "dur": 164.86366666666666,
+   "round": 1,
+   "start_sec": 4578.41
+  },
+  {
+   "path": "/home/user/kgv_media/songs/따뜻한 홍차 한 잔.m4a",
+   "name": "따뜻한 홍차 한 잔",
+   "dur": 182.31466666666665,
+   "round": 1,
+   "start_sec": 4743.28
+  },
+  {
+   "path": "/home/user/kgv_media/songs/만년필과 빈 종이.m4a",
+   "name": "만년필과 빈 종이",
+   "dur": 169.45066666666668,
+   "round": 1,
+   "start_sec": 4925.59
+  },
+  {
+   "path": "/home/user/kgv_media/songs/에코백을 메고서.m4a",
+   "name": "에코백을 메고서",
+   "dur": 179.30666666666667,
+   "round": 1,
+   "start_sec": 5095.04
+  },
+  {
+   "path": "/home/user/kgv_media/songs/마침표를 찍고 나면.m4a",
+   "name": "마침표를 찍고 나면",
+   "dur": 180.54366666666667,
+   "round": 1,
+   "start_sec": 5274.35
+  },
+  {
+   "path": "/home/user/kgv_media/songs/말차 라떼와 주파수.m4a",
+   "name": "말차 라떼와 주파수",
+   "dur": 173.78166666666667,
+   "round": 1,
+   "start_sec": 5454.89
+  },
+  {
+   "path": "/home/user/kgv_media/songs/현관문을 열면.m4a",
+   "name": "현관문을 열면",
+   "dur": 159.31766666666667,
+   "round": 1,
+   "start_sec": 5628.67
+  },
+  {
+   "path": "/home/user/kgv_media/songs/노을 비치는 창틀.m4a",
+   "name": "노을 비치는 창틀",
+   "dur": 167.44566666666665,
+   "round": 1,
+   "start_sec": 5787.99
+  },
+  {
+   "path": "/home/user/kgv_media/songs/망설임 없는 연필선.m4a",
+   "name": "망설임 없는 연필선",
+   "dur": 166.80566666666667,
+   "round": 1,
+   "start_sec": 5955.44
+  },
+  {
+   "path": "/home/user/kgv_media/songs/열어둔 창과 하늘빛.m4a",
+   "name": "열어둔 창과 하늘빛",
+   "dur": 166.74166666666667,
+   "round": 1,
+   "start_sec": 6122.24
+  },
+  {
+   "path": "/home/user/kgv_media/songs/서랍을 닫는 저녁.m4a",
+   "name": "서랍을 닫는 저녁",
+   "dur": 160.93866666666668,
+   "round": 1,
+   "start_sec": 6288.98
+  },
+  {
+   "path": "/home/user/kgv_media/songs/안개가 걷힌 뒤.m4a",
+   "name": "안개가 걷힌 뒤",
+   "dur": 160.57566666666668,
+   "round": 1,
+   "start_sec": 6449.92
+  },
+  {
+   "path": "/home/user/kgv_media/songs/하얀 식탁의 계절.m4a",
+   "name": "하얀 식탁의 계절",
+   "dur": 172.52266666666668,
+   "round": 1,
+   "start_sec": 6610.5
+  },
+  {
+   "path": "/home/user/kgv_media/songs/노을 속을 헤엄치듯.m4a",
+   "name": "노을 속을 헤엄치듯",
+   "dur": 179.17866666666666,
+   "round": 1,
+   "start_sec": 6783.02
+  },
+  {
+   "path": "/home/user/kgv_media/songs/여섯 시의 골목길.m4a",
+   "name": "여섯 시의 골목길",
+   "dur": 168.57566666666668,
+   "round": 1,
+   "start_sec": 6962.2
+  },
+  {
+   "path": "/home/user/kgv_media/songs/구름 위를 걷는 기분.m4a",
+   "name": "구름 위를 걷는 기분",
+   "dur": 174.93366666666665,
+   "round": 1,
+   "start_sec": 7130.78
+  },
+  {
+   "path": "/home/user/kgv_media/songs/구름 없는 시월.m4a",
+   "name": "구름 없는 시월",
+   "dur": 152.95966666666666,
+   "round": 1,
+   "start_sec": 7305.71
+  },
+  {
+   "path": "/home/user/kgv_media/songs/풀어둔 소매 단추.m4a",
+   "name": "풀어둔 소매 단추",
+   "dur": 181.80266666666665,
+   "round": 1,
+   "start_sec": 7458.67
+  },
+  {
+   "path": "/home/user/kgv_media/songs/느린 호흡의 온도.m4a",
+   "name": "느린 호흡의 온도",
+   "dur": 181.99466666666666,
+   "round": 1,
+   "start_sec": 7640.47
+  },
+  {
+   "path": "/home/user/kgv_media/songs/헐렁한 티셔츠와 주말.m4a",
+   "name": "헐렁한 티셔츠와 주말",
+   "dur": 181.35466666666667,
+   "round": 1,
+   "start_sec": 7822.47
+  },
+  {
+   "path": "/home/user/kgv_media/songs/햇볕에 마른 린넨.m4a",
+   "name": "햇볕에 마른 린넨",
+   "dur": 164.01066666666668,
+   "round": 1,
+   "start_sec": 8003.82
+  },
+  {
+   "path": "/home/user/kgv_media/songs/오후의 재단실.m4a",
+   "name": "오후의 재단실",
+   "dur": 181.18366666666665,
+   "round": 1,
+   "start_sec": 8167.83
+  },
+  {
+   "path": "/home/user/kgv_media/songs/단골집 포장 봉투.m4a",
+   "name": "단골집 포장 봉투",
+   "dur": 170.09066666666666,
+   "round": 1,
+   "start_sec": 8349.02
+  },
+  {
+   "path": "/home/user/kgv_media/songs/파스텔 색연필.m4a",
+   "name": "파스텔 색연필",
+   "dur": 162.62366666666668,
+   "round": 1,
+   "start_sec": 8519.11
+  },
+  {
+   "path": "/home/user/kgv_media/songs/구석 자리와 베이스라인.m4a",
+   "name": "구석 자리와 베이스라인",
+   "dur": 169.45066666666668,
+   "round": 1,
+   "start_sec": 8681.73
+  },
+  {
+   "path": "/home/user/kgv_media/songs/네모 칸의 일기.m4a",
+   "name": "네모 칸의 일기",
+   "dur": 154.02666666666667,
+   "round": 1,
+   "start_sec": 8851.18
+  },
+  {
+   "path": "/home/user/kgv_media/songs/금요일 저녁의 공기.m4a",
+   "name": "금요일 저녁의 공기",
+   "dur": 156.54366666666667,
+   "round": 1,
+   "start_sec": 9005.21
+  },
+  {
+   "path": "/home/user/kgv_media/songs/커튼이 흔들리는 방.m4a",
+   "name": "커튼이 흔들리는 방",
+   "dur": 139.47766666666666,
+   "round": 1,
+   "start_sec": 9161.75
+  },
+  {
+   "path": "/home/user/kgv_media/songs/새 노트를 펼치면.m4a",
+   "name": "새 노트를 펼치면",
+   "dur": 181.69566666666665,
+   "round": 1,
+   "start_sec": 9301.23
+  },
+  {
+   "path": "/home/user/kgv_media/songs/보도블록 위 왈츠.m4a",
+   "name": "보도블록 위 왈츠",
+   "dur": 166.46366666666665,
+   "round": 1,
+   "start_sec": 9482.92
+  },
+  {
+   "path": "/home/user/kgv_media/songs/골목 끝 로스터리.m4a",
+   "name": "골목 끝 로스터리",
+   "dur": 168.66166666666666,
+   "round": 1,
+   "start_sec": 9649.39
+  },
+  {
+   "path": "/home/user/kgv_media/songs/작업대 위의 원단.m4a",
+   "name": "작업대 위의 원단",
+   "dur": 180.65066666666667,
+   "round": 1,
+   "start_sec": 9818.05
+  },
+  {
+   "path": "/home/user/kgv_media/songs/동네 한 바퀴.m4a",
+   "name": "동네 한 바퀴",
+   "dur": 181.16266666666667,
+   "round": 1,
+   "start_sec": 9998.7
+  },
+  {
+   "path": "/home/user/kgv_media/songs/가로등과 풀벌레 소리.m4a",
+   "name": "가로등과 풀벌레 소리",
+   "dur": 159.85066666666665,
+   "round": 1,
+   "start_sec": 10179.86
+  },
+  {
+   "path": "/home/user/kgv_media/songs/모퉁이 가게 복숭아차.m4a",
+   "name": "모퉁이 가게 복숭아차",
+   "dur": 152.78966666666668,
+   "round": 1,
+   "start_sec": 10339.71
+  },
+  {
+   "path": "/home/user/kgv_media/songs/베란다의 연두빛 잎.m4a",
+   "name": "베란다의 연두빛 잎",
+   "dur": 181.09866666666667,
+   "round": 1,
+   "start_sec": 10492.5
+  }
+ ],
+ "cover": ""
+}
