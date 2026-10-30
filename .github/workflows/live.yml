@@ -1,5 +1,13 @@
 name: 24-7 YouTube live loop
 
+# =====================================================================
+#  หลักการ: 1 job = 1 รอบ (180 นาที = เพลง 63 เพลงไม่ซ้ำ 1 รอบ)
+#  เมื่อรอบจบ step สุดท้ายจะ dispatch รอบถัดไปเอง (self-chain)
+#  -> ไม่ต้องมีคนกดอะไรอีก ระบบเดินต่อเนื่อง 24/7
+#  ช่องว่างระหว่างรอบ ~1-3 นาที (checkout + apt install + โหลดไฟล์ 1.43 GB)
+#  broadcast ไม่ปิดเพราะ enableAutoStop=False ตั้งไว้ฝั่ง YouTube แล้ว
+# =====================================================================
+
 on:
   workflow_dispatch:
     inputs:
@@ -8,21 +16,36 @@ on:
         required: false
         default: "180"
   schedule:
-    # ทุก 2 ชม. (ไม่ใช่ 6) โดยตั้งใจ:
-    #   job ถูกฆ่าที่ 6 ชม. แต่สคริปต์จบเองที่ 5 ชม. 45 น.
-    #   cron ที่ยิงมาซ้ำระหว่างนั้นจะถูก "ต่อคิว" (concurrency group เดียวกัน)
-    #   พอ job ปัจจุบันจบ คิวถัดไปเริ่มทันที -> ช่องว่างเหลือ ~0-5 นาที ไม่ใช่ 15-30 นาที
-    #   หมายเหตุ: GitHub เก็บคิวไว้แค่ 1 รายการ (ตัวใหม่ทับตัวเก่า) จึงไม่รันซ้อนกัน
+    # เป็น "ตัวสำรอง" เท่านั้น (GitHub ไม่การันตี cron) — กลไกหลักคือ self-chain
     - cron: "0 */2 * * *"
 
 concurrency:
   group: youtube-live
-  cancel-in-progress: false # don't kill the running stream when a new run is queued
+  cancel-in-progress: false # อย่าฆ่าไลฟ์ที่กำลังรันอยู่เมื่อมีตัวใหม่เข้าคิว
+
+permissions:
+  actions: write   # จำเป็นสำหรับ dispatch รอบถัดไป
+  contents: read
 
 jobs:
   stream:
     runs-on: ubuntu-latest
     timeout-minutes: 360
+    env:
+      # --- ปลายทาง YouTube ---
+      STREAM_KEY: ${{ secrets.YOUTUBE_STREAM_KEY }}
+      VIDEO: loop.mp4
+      # 1 = สตรีมด้วย -c:v copy (แนะนำมาก: ไฟล์ต้อง pre-encode ด้วย make_loop_file.sh)
+      # 0 = encode สดบน runner (กิน CPU 2 คอร์ -> ภาพกระตุกง่าย)
+      COPY_MODE: "1"
+      V_BITRATE: 4500k # ลดเป็น 2500k ถ้าเน็ต runner อ่อน
+      A_BITRATE: 192k
+      # ⚠ บน GitHub Actions ไม่ควรเปิด backup ingest (upload 2 เท่า -> drop frame)
+      BACKUP_URL: ""
+      # 1 = ไฟล์ที่ใช้คือ "1 รอบเต็ม" (เพลงครบชุดไม่ซ้ำ) -> เล่นจบแล้วหยุด ไม่วนซ้ำ
+      PLAY_ONCE: "1"
+      # ความยาวรอบนี้ = ค่าที่กรอกตอนกด Run workflow (default 180 นาที = 3 ชม.)
+      STREAM_MINUTES: ${{ inputs.minutes || '180' }}
     steps:
       - uses: actions/checkout@v4
 
@@ -66,30 +89,57 @@ jobs:
             | grep -q . || { echo "::error::ไฟล์ที่ได้ไม่ใช่ไฟล์วิดีโอ (อาจเป็นหน้า HTML ของ Drive)"; exit 1; }
 
       - name: Stream to YouTube
-        env:
-          STREAM_KEY: ${{ secrets.YOUTUBE_STREAM_KEY }}
-          VIDEO: loop.mp4
-          # 1 = สตรีมด้วย -c:v copy (แนะนำมาก: ไฟล์ต้อง pre-encode ด้วย make_loop_file.sh)
-          # 0 = encode สดบน runner (กิน CPU 2 คอร์ -> ภาพกระตุกง่าย)
-          COPY_MODE: "1"
-          V_BITRATE: 4500k # drop to 2500k for 720p on weaker runners
-          A_BITRATE: 192k
-          # ⚠ บน GitHub Actions ไม่ควรเปิด backup ingest (upload 2 เท่า -> drop frame)
-          # ถ้าย้ายไป VPS ค่อยใส่ rtmp://b.rtmp.youtube.com/live2?backup=1
-          BACKUP_URL: ""
-          # 1 = ไฟล์ที่ใช้คือ "1 รอบเต็ม" (เพลงครบชุดไม่ซ้ำ) -> เล่นจบแล้วหยุด ไม่วนซ้ำ
-          #     เหมาะกับไฟล์จาก make_music_loop.sh
-          # 0 = วนลูปไฟล์สั้นๆ ไปเรื่อยๆ จนครบเวลา
-          PLAY_ONCE: "1"
-          # ความยาวรอบนี้ = ค่าที่กรอกตอนกด Run workflow (default 180 นาที = 3 ชม.)
-          # หมายเหตุ: ตัวเลขนี้คือ "ความยาวของ live" ไม่ใช่ความยาวไฟล์
-          # เพราะ stream.sh ใช้ -stream_loop -1 วนไฟล์สั้นๆ ได้ไม่จำกัด
-          STREAM_MINUTES: ${{ inputs.minutes || '180' }}
+        id: stream
+        continue-on-error: true
         run: |
+          START_TS=$(date +%s)
           chmod +x stream.sh
           MINS="${STREAM_MINUTES%.*}"
           [ -n "$MINS" ] && [ "$MINS" -gt 0 ] 2>/dev/null || MINS=180
           # หัก 60 วิ buffer ให้ ffmpeg ปิดตัวเองก่อน GitHub ฆ่าที่ 6 ชม. พอดี
           export MAX_SECONDS=$(( MINS * 60 - 60 ))
           echo "รอบนี้สตรีม $MINS นาที (MAX_SECONDS=$MAX_SECONDS) จากไฟล์ $(du -h loop.mp4 | cut -f1)"
+          set +e
           ./stream.sh
+          RC=$?
+          ELAPSED=$(( $(date +%s) - START_TS ))
+          echo "STREAM_ELAPSED=$ELAPSED" >> "$GITHUB_ENV"
+          echo "ffmpeg exit=$RC, สตรีมไปได้ ${ELAPSED}s"
+          exit $RC
+
+      - name: Retry once (เฉพาะกรณีหลุดเร็วผิดปกติ)
+        if: steps.stream.outcome == 'failure' && env.STREAM_ELAPSED != '' && env.STREAM_ELAPSED < 600
+        env:
+          STREAM_MINUTES: "5"
+        run: |
+          echo "รอบแรกหลุดภายใน ${STREAM_ELAPSED}s — ลองต่อใหม่ 1 ครั้ง"
+          sleep 30
+          chmod +x stream.sh
+          export MAX_SECONDS=$(( 5 * 60 - 60 ))
+          set +e
+          ./stream.sh
+          echo "retry exit=$?"
+
+      - name: Chain next round (self re-dispatch)
+        # จบรอบ -> สั่งรอบถัดไปเอง ไม่ต้องมีคนกด
+        # ใช้ GITHUB_TOKEN ได้เพราะ GitHub ยกเว้น workflow_dispatch/repository_dispatch
+        # จากการกันลูปเรียกซ้ำ (event ที่ยิงด้วย GITHUB_TOKEN ปกติจะไม่สร้าง run ใหม่)
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ELAPSED: ${{ env.STREAM_ELAPSED }}
+        run: |
+          if [ -z "${ELAPSED:-}" ] || [ "${ELAPSED:-0}" -lt 600 ]; then
+            echo "::error::รอบนี้สตรีมไม่ถึง 10 นาที — ไม่ต่อรอบอัตโนมัติ (กันลูปพัง) กรุณาตรวจ stream health แล้ว dispatch เอง"
+            exit 0
+          fi
+          MINS="${STREAM_MINUTES%.*}"
+          [ -n "$MINS" ] && [ "$MINS" -gt 0 ] 2>/dev/null || MINS=180
+          curl -sS -X POST \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            "https://api.github.com/repos/${GITHUB_REPOSITORY}/actions/workflows/live.yml/dispatches" \
+            -d "{\"ref\":\"main\",\"inputs\":{\"minutes\":\"$MINS\"}}" \
+            -w "chain HTTP=%{http_code}\n"
+          echo "สั่งรอบถัดไปแล้ว ($MINS นาที)"
