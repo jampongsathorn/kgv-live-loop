@@ -12,9 +12,9 @@ on:
   workflow_dispatch:
     inputs:
       minutes:
-        description: "ความยาวรอบนี้ (นาที) — 180 = 3 ชม. / 2 = ทดสอบสั้นๆ"
+        description: "ความยาวรอบนี้ (นาที) — 330 = 5 ชม. 30 น. (แนะนำ) / 180 = 3 ชม. / 2 = ทดสอบสั้นๆ"
         required: false
-        default: "180"
+        default: "330"
   schedule:
     # เป็น "ตัวสำรอง" เท่านั้น (GitHub ไม่การันตี cron) — กลไกหลักคือ self-chain
     - cron: "0 */2 * * *"
@@ -42,10 +42,12 @@ jobs:
       A_BITRATE: 192k
       # ⚠ บน GitHub Actions ไม่ควรเปิด backup ingest (upload 2 เท่า -> drop frame)
       BACKUP_URL: ""
-      # 1 = ไฟล์ที่ใช้คือ "1 รอบเต็ม" (เพลงครบชุดไม่ซ้ำ) -> เล่นจบแล้วหยุด ไม่วนซ้ำ
-      PLAY_ONCE: "1"
+      # 0 = วนไฟล์ซ้ำภายในรอบเดียว (ต้องใช้คู่กับ minutes=330)
+      #     เพลง 1-63 ครบชุดก่อน แล้วจึงเริ่มรอบใหม่ -> ไม่มีเพลงไหนเริ่มซ้ำก่อนจบครบ 63
+      #     1 = เล่นไฟล์จบแล้วหยุด (จะได้รอบละ 2 ชม. 58 น. เท่านั้น เพราะไฟล์ยาว 177.9 นาที)
+      PLAY_ONCE: "0"
       # ความยาวรอบนี้ = ค่าที่กรอกตอนกด Run workflow (default 180 นาที = 3 ชม.)
-      STREAM_MINUTES: ${{ inputs.minutes || '180' }}
+      STREAM_MINUTES: ${{ inputs.minutes || '330' }}
     steps:
       - uses: actions/checkout@v4
 
@@ -95,7 +97,9 @@ jobs:
           START_TS=$(date +%s)
           chmod +x stream.sh
           MINS="${STREAM_MINUTES%.*}"
-          [ -n "$MINS" ] && [ "$MINS" -gt 0 ] 2>/dev/null || MINS=180
+          [ -n "$MINS" ] && [ "$MINS" -gt 0 ] 2>/dev/null || MINS=330
+          # เพดาน GitHub = 6 ชม./job -> 330 นาที (5 ชม. 30 น.) ยังปลอดภัย
+          [ "$MINS" -gt 350 ] && MINS=350
           # หัก 60 วิ buffer ให้ ffmpeg ปิดตัวเองก่อน GitHub ฆ่าที่ 6 ชม. พอดี
           export MAX_SECONDS=$(( MINS * 60 - 60 ))
           echo "รอบนี้สตรีม $MINS นาที (MAX_SECONDS=$MAX_SECONDS) จากไฟล์ $(du -h loop.mp4 | cut -f1)"
@@ -142,7 +146,7 @@ jobs:
             exit 0
           fi
           MINS="${STREAM_MINUTES%.*}"
-          [ -n "$MINS" ] && [ "$MINS" -gt 0 ] 2>/dev/null || MINS=180
+          [ -n "$MINS" ] && [ "$MINS" -gt 0 ] 2>/dev/null || MINS=330
           curl -sS -X POST \
             -H "Authorization: Bearer $GH_TOKEN" \
             -H "Accept: application/vnd.github+json" \
