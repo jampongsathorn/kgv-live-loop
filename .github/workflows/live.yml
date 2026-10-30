@@ -108,10 +108,15 @@ jobs:
           exit $RC
 
       - name: Retry once (เฉพาะกรณีหลุดเร็วผิดปกติ)
-        if: steps.stream.outcome == 'failure' && env.STREAM_ELAPSED != '' && env.STREAM_ELAPSED < 600
+        if: steps.stream.outcome == 'failure'
         env:
           STREAM_MINUTES: "5"
         run: |
+          # อ่านค่าจาก shell env (GITHUB_ENV) — ห้ามใช้ ${{ env.X }} เพราะไม่เห็นค่าที่เขียนตอนรัน
+          if [ -z "${STREAM_ELAPSED:-}" ] || [ "${STREAM_ELAPSED:-0}" -ge 600 ]; then
+            echo "สตรีมไปได้ ${STREAM_ELAPSED:-0}s (>=600s) — ไม่ต้อง retry"
+            exit 0
+          fi
           echo "รอบแรกหลุดภายใน ${STREAM_ELAPSED}s — ลองต่อใหม่ 1 ครั้ง"
           sleep 30
           chmod +x stream.sh
@@ -127,8 +132,11 @@ jobs:
         if: always()
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          ELAPSED: ${{ env.STREAM_ELAPSED }}
         run: |
+          # STREAM_ELAPSED ถูกเขียนไว้ใน $GITHUB_ENV ของ step ก่อนหน้า -> shell เห็นค่านี้
+          # (สำคัญ: ${{ env.STREAM_ELAPSED }} มองไม่เห็นค่าที่เขียนตอนรัน — ต้องอ่านจาก shell เท่านั้น)
+          ELAPSED="${STREAM_ELAPSED:-0}"
+          echo "สตรีมรอบนี้ไปได้ ${ELAPSED}s"
           if [ -z "${ELAPSED:-}" ] || [ "${ELAPSED:-0}" -lt 600 ]; then
             echo "::error::รอบนี้สตรีมไม่ถึง 10 นาที — ไม่ต่อรอบอัตโนมัติ (กันลูปพัง) กรุณาตรวจ stream health แล้ว dispatch เอง"
             exit 0
